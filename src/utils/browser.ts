@@ -1,15 +1,33 @@
 import dotenv from "dotenv";
 import puppeteer from "puppeteer";
+import path from "path";
+import fs from "fs";
 
 dotenv.config();
 
+// Render 환경 여부
 const isRender = process.env.RENDER === "true";
+// Render용 Chrome 실행파일 경로 (puppeteer 설치 로그로부터 고정 경로)
+const renderChromePath =
+  "/opt/render/.cache/puppeteer/chrome/linux-137.0.7151.119/chrome-linux64/chrome";
+
+const getExecutablePath = () => {
+  if (isRender) {
+    if (fs.existsSync(renderChromePath)) {
+      return renderChromePath;
+    } else {
+      console.error("❌ Chrome binary not found at expected path on Render");
+      throw new Error("Chrome binary not found");
+    }
+  }
+  // 로컬은 puppeteer가 자체적으로 경로 찾도록
+  return undefined;
+};
+
 export const getDanawaPrice = async (query: string) => {
   const browser = await puppeteer.launch({
     headless: true,
-    executablePath: isRender
-      ? "/opt/render/.cache/puppeteer/chrome/linux-137.0.7151.119/chrome-linux64/chrome"
-      : undefined,
+    executablePath: getExecutablePath(),
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
   });
 
