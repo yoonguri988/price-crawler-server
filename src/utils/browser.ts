@@ -4,10 +4,10 @@ const isRender = process.env.RENDER === "true";
 
 export const getBrowser = async () => {
   // Puppeteer가 설치한 크롬 경로 명시
-  // const executablePath = puppeteer.executablePath();
+  const executablePath = puppeteer.executablePath();
   return await puppeteer.launch({
     headless: true,
-    // executablePath, // ✅ 명시적으로 경로 설정
+    executablePath, // ✅ 명시적으로 경로 설정
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
   });
 };
@@ -32,7 +32,7 @@ export const getDanawaPrice = async (query: string) => {
       }
     );
     await page.setJavaScriptEnabled(true);
-    await page.waitForSelector(".prod_main_info", { timeout: 5000 }); // ← 중요
+    // await page.waitForSelector(".prod_main_info", { timeout: 5000 }); // ← 중요
 
     const html = await page.content();
     console.log(
