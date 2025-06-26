@@ -1,11 +1,13 @@
-
 import puppeteer from "puppeteer";
 
 const isRender = process.env.RENDER === "true";
 
 export const getBrowser = async () => {
+  // Puppeteer가 설치한 크롬 경로 명시
+  const executablePath = puppeteer.executablePath();
   return await puppeteer.launch({
     headless: true,
+    executablePath, // ✅ 명시적으로 경로 설정
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
   });
 };
