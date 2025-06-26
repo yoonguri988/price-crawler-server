@@ -14,7 +14,7 @@ router.get("/", async (req: Request, res: Response) => {
     const result = await getDanawaPrice(query);
     return res.json(result);
   } catch (error) {
-    console.error(error);
+    console.error("크롤링 실패:", error);
     return res.status(500).json({ error: "Failed to crawl" });
   }
 });
