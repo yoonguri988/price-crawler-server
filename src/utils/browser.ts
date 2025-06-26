@@ -1,29 +1,9 @@
-import dotenv from "dotenv";
-dotenv.config();
+
 import puppeteer from "puppeteer";
-import fs from "fs";
 
 const isRender = process.env.RENDER === "true";
-const renderChromePath =
-  "/opt/render/.cache/puppeteer/chrome/linux-137.0.7151.119/chrome-linux64/chrome";
 
-const getBrowser = async () => {
-  console.log("▶ Render mode:", isRender);
-  console.log("▶ Chrome path:", renderChromePath);
-  console.log("▶ Exists:", fs.existsSync(renderChromePath));
-  console.log("▶ Process UID:", process.getuid?.());
-
-  const executablePath =
-    isRender && fs.existsSync(renderChromePath)
-      ? renderChromePath
-      : puppeteer.executablePath();
-
-  console.log("▶ Puppeteer ExecutablePath:", puppeteer.executablePath());
-  console.log(
-    "▶ Chrome file mode:",
-    fs.statSync(renderChromePath).mode.toString(8)
-  );
-
+export const getBrowser = async () => {
   return await puppeteer.launch({
     headless: true,
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
