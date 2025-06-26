@@ -11,7 +11,7 @@ export const getDanawaPrice = async (query: string) => {
 
   try {
     const page = await browser.newPage();
-    
+
     await page.setUserAgent(
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
     );
@@ -36,7 +36,7 @@ export const getDanawaPrice = async (query: string) => {
 
     return data;
   } catch (err) {
-    console.error("크롤링 실패:", err);
+    console.error("❌ getDanawaPrice 내부 오류:", err);
     throw err;
   } finally {
     await browser.close();

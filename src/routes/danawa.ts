@@ -14,7 +14,11 @@ router.get("/", async (req: Request, res: Response) => {
     res.json(result);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Failed to crawl" });
+    res.status(500).json({
+      error: "Failed to crawl",
+      detail: (err as Error).message,
+      stack: (err as Error).stack,
+    });
   }
 });
 
