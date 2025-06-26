@@ -4,9 +4,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getDanawaPrice = void 0;
-const puppeteer_1 = __importDefault(require("puppeteer"));
+const dotenv_1 = __importDefault(require("dotenv"));
+const puppeteer_core_1 = __importDefault(require("puppeteer-core"));
+dotenv_1.default.config();
 const getDanawaPrice = async (query) => {
-    const browser = await puppeteer_1.default.launch({
+    const executablePath = process.env.CHROME_PATH;
+    if (!executablePath)
+        throw new Error("CHROME_PATH env var not set!");
+    const browser = await puppeteer_core_1.default.launch({
+        executablePath: executablePath,
         headless: true,
         args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
