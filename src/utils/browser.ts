@@ -3,9 +3,13 @@ import puppeteer from "puppeteer";
 
 dotenv.config();
 
+const isRender = process.env.RENDER === "true";
 export const getDanawaPrice = async (query: string) => {
   const browser = await puppeteer.launch({
     headless: true,
+    executablePath: isRender
+      ? "/opt/render/.cache/puppeteer/chrome/linux-137.0.7151.119/chrome-linux64/chrome"
+      : undefined,
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
   });
 

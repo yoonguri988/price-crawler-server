@@ -7,9 +7,13 @@ exports.getDanawaPrice = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
 const puppeteer_1 = __importDefault(require("puppeteer"));
 dotenv_1.default.config();
+const isRender = process.env.RENDER === "true";
 const getDanawaPrice = async (query) => {
     const browser = await puppeteer_1.default.launch({
         headless: true,
+        executablePath: isRender
+            ? "/opt/render/.cache/puppeteer/chrome/linux-137.0.7151.119/chrome-linux64/chrome"
+            : undefined,
         args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
     try {
@@ -29,7 +33,7 @@ const getDanawaPrice = async (query) => {
         return data;
     }
     catch (err) {
-        console.error("크롤링 실패:", err);
+        console.error("❌ getDanawaPrice 내부 오류:", err);
         throw err;
     }
     finally {

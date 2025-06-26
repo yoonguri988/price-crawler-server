@@ -14,7 +14,11 @@ router.get("/", async (req, res) => {
     }
     catch (err) {
         console.error(err);
-        res.status(500).json({ error: "Failed to crawl" });
+        res.status(500).json({
+            error: "Failed to crawl",
+            detail: err.message,
+            stack: err.stack,
+        });
     }
 });
 exports.default = router;
