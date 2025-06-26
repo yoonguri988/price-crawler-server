@@ -5,17 +5,16 @@ const router = Router();
 
 router.get("/", async (req: Request, res: Response) => {
   const { query } = req.query;
-
   if (!query || typeof query !== "string") {
-    return res.status(400).json({ error: "Query parameter is required" });
+    return res.status(400).json({ error: "Missing query" });
   }
 
   try {
     const result = await getDanawaPrice(query);
-    return res.json(result);
-  } catch (error) {
-    console.error("크롤링 실패:", error);
-    return res.status(500).json({ error: "Failed to crawl" });
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to crawl" });
   }
 });
 

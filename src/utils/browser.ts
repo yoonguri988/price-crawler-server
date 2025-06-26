@@ -8,7 +8,9 @@ export const getDanawaPrice = async (query: string) => {
 
   const page = await browser.newPage();
   await page.goto(
-    `https://search.danawa.com/dsearch.php?query=${encodeURIComponent(query)}`,
+    `https://search.danawa.com/dsearch.php?keyword=${encodeURIComponent(
+      query
+    )}`,
     {
       waitUntil: "domcontentloaded",
     }
@@ -18,7 +20,9 @@ export const getDanawaPrice = async (query: string) => {
     const items = Array.from(document.querySelectorAll(".prod_main_info"));
     return items.slice(0, 5).map((el) => {
       const title = el.querySelector(".prod_name")?.textContent?.trim();
-      const price = el.querySelector(".price_sect")?.textContent?.trim();
+      const price = el
+        .querySelector(".price_sect a strong")
+        ?.textContent?.trim();
       return { title, price };
     });
   });
