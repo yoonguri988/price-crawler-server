@@ -4,7 +4,6 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "ts-node-dev src/index.ts",
-    "prepare": "npx puppeteer install chrome",
     "build": "tsc",
     "start": "npx puppeteer browsers install chrome && node dist/index.js"
   },
