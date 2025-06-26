@@ -6,7 +6,7 @@
     "dev": "ts-node-dev src/index.ts",
     "build": "tsc",
     "postinstall": "npx puppeteer browsers install chrome",
-    "start": "node dist/index.js"
+    "start": "npx puppeteer browsers install chrome && next start"
   },
   "dependencies": {
     "cors": "^2.8.5",
