@@ -1,0 +1,30 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getDanawaPrice = void 0;
+const puppeteer_1 = __importDefault(require("puppeteer"));
+const getDanawaPrice = async (query) => {
+    const browser = await puppeteer_1.default.launch({
+        headless: true,
+        args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
+    const page = await browser.newPage();
+    await page.goto(`https://search.danawa.com/dsearch.php?keyword=${encodeURIComponent(query)}`, {
+        waitUntil: "domcontentloaded",
+    });
+    const data = await page.evaluate(() => {
+        const items = Array.from(document.querySelectorAll(".prod_main_info"));
+        return items.slice(0, 5).map((el) => {
+            const title = el.querySelector(".prod_name")?.textContent?.trim();
+            const price = el
+                .querySelector(".price_sect a strong")
+                ?.textContent?.trim();
+            return { title, price };
+        });
+    });
+    await browser.close();
+    return data;
+};
+exports.getDanawaPrice = getDanawaPrice;
