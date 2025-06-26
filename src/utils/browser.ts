@@ -31,10 +31,11 @@ export const getDanawaPrice = async (query: string) => {
     const data = await page.evaluate(() => {
       const items = Array.from(document.querySelectorAll(".prod_main_info"));
       return items.slice(0, 5).map((el) => {
-        const title = el.querySelector(".prod_name")?.textContent?.trim();
-        const price = el
-          .querySelector(".price_sect a strong")
-          ?.textContent?.trim();
+        const title =
+          el.querySelector(".prod_name")?.textContent?.trim() || "no title";
+        const price =
+          el.querySelector(".price_sect a strong")?.textContent?.trim() ||
+          "no price";
         return { title, price };
       });
     });
