@@ -6,6 +6,8 @@ services:
     branch: main
     buildCommand: npm install
     startCommand: npm run start
-    envVars:
-      - key: RENDER
-        value: "true"
+envVars:
+  - key: PUPPETEER_SKIP_CHROMIUM_DOWNLOAD
+    value: "false"
+  - key: RENDER
+    value: "true"
