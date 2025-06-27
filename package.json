@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "scripts": {
-    "postinstall": "puppeteer install",
+    "postinstall": "PUPPETEER_PRODUCT=chrome npm install puppeteer",
     "dev": "nodemon src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js"
