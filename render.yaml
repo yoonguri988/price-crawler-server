@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: crawl-server
+    name: price-crawler-server
     runtime: node
     plan: free
     branch: main
