@@ -1,15 +1,12 @@
-/**
- * @description Express 서버 진입점
- */
+// src/index.ts
 import express from "express";
-import cors from "cors";
 import crawlRouter from "./routes/crawl.route";
 
 const app = express();
-app.use(cors());
-app.use("/api", crawlRouter);
+const port = 3000;
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`🚀 Server running at http://localhost:${PORT}`);
+app.use("/api/crawl", crawlRouter);
+
+app.listen(port, () => {
+  console.log(`🚀 서버 실행 중: http://localhost:${port}`);
 });

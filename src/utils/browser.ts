@@ -11,6 +11,10 @@ export const getBrowser = async () => {
   return await puppeteer.launch({
     headless: true, // ✅ 최신 Chrome 호환 모드 사용
     executablePath,
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    args: [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--dns-prefetch-disable",
+    ],
   });
 };
