@@ -1,10 +1,14 @@
 /**
  * @description Puppeteer 브라우저 관리
  */
-import puppeteer, { Browser } from "puppeteer";
+import puppeteer from "puppeteer";
 
-export const getBrowser = async (): Promise<Browser> => {
-  const executablePath = puppeteer.executablePath(); // ✅ 자동 경로 사용
+export const getBrowser = async () => {
+  const isRender = process.env.RENDER === "true";
+
+  const executablePath = isRender
+    ? "/opt/render/.cache/puppeteer/chrome/linux-138.0.7204.49/chrome-linux64/chrome"
+    : puppeteer.executablePath();
 
   return await puppeteer.launch({
     headless: true,
