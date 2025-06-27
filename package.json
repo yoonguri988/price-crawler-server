@@ -2,12 +2,13 @@
   "name": "price-crawler-server",
   "version": "1.0.0",
   "main": "dist/index.js",
-"scripts": {
-  "postinstall": "npx puppeteer browsers install chrome",
-  "build": "tsc",
-  "start": "node dist/index.js"
-}
-,
+  "scripts": {
+    "start:debug": "node --inspect-brk dist/index.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "postinstall": "npx puppeteer browsers install chrome",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.6.0",
