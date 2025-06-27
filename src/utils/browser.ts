@@ -4,11 +4,9 @@
 import puppeteer from "puppeteer";
 
 export const getBrowser = async () => {
-  const isRender = process.env.RENDER === "true";
+  const executablePath = puppeteer.executablePath(); // 명시 경로 제거
 
-  const executablePath = isRender
-    ? "/opt/render/.cache/puppeteer/chrome/linux-138.0.7204.49/chrome-linux64/chrome"
-    : puppeteer.executablePath();
+  console.log("🧪 Render executablePath:", puppeteer.executablePath());
 
   return await puppeteer.launch({
     headless: true,
