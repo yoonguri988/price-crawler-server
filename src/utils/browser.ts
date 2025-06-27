@@ -9,7 +9,7 @@ export const getBrowser = async () => {
   console.log("🧪 Render executablePath:", puppeteer.executablePath());
 
   return await puppeteer.launch({
-    headless: "new" as any, // ✅ 최신 Chrome 호환 모드 사용
+    headless: true, // ✅ 최신 Chrome 호환 모드 사용
     executablePath,
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
   });
