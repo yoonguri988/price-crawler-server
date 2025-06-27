@@ -1,18 +1,15 @@
-import dotenv from "dotenv";
+/**
+ * @description Express 서버 진입점
+ */
 import express from "express";
 import cors from "cors";
-import danawaRouter from "./routes/danawa";
-
-dotenv.config();
+import crawlRouter from "./routes/crawl.route";
 
 const app = express();
-
 app.use(cors());
-app.use(express.json());
+app.use("/api", crawlRouter);
 
-app.use("/danawa", danawaRouter);
-
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
+  console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
