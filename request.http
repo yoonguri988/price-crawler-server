@@ -1,3 +1,5 @@
-GET http://localhost:3000/api/crawl?site=danawa&query=노트북
+GET http://localhost:8080/api/crawl?site=danawa&query=노트북
 ###
-GET http://localhost:3000/api/crawl?site=enuri&query=닌텐도스위치2
+GET http://localhost:8080/api/crawl?site=enuri&query=닌텐도스위치2
+###
+GET http://localhost:8080/api/crawl?site=gmarket&query=한교동

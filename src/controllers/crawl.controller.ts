@@ -1,7 +1,8 @@
 // src/controllers/crawl.controller.ts
 import { Request, Response } from "express";
 import { getEnuriProducts } from "../services/enuri.service";
-import { getDanawaProducts } from "../services/danawa.service"; // 이미 존재한다고 가정
+import { getDanawaProducts } from "../services/danawa.service";
+import { getGmarketProducts } from "../services/gmarket.service";
 
 export const crawlProduct = async (req: Request, res: Response) => {
   const { site, query } = req.query;
@@ -13,6 +14,9 @@ export const crawlProduct = async (req: Request, res: Response) => {
   try {
     let data;
     switch (site) {
+      case "gmarket":
+        data = await getGmarketProducts(query);
+        break;
       case "enuri":
         data = await getEnuriProducts(query);
         break;
