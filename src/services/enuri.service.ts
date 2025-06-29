@@ -2,9 +2,10 @@ import { getBrowser } from "../utils/browser";
 
 export const getEnuriProducts = async (query: string) => {
   const browser = await getBrowser();
-  const page = await browser.newPage();
 
   try {
+    const page = await browser.newPage();
+
     // 봇 탐지 회피 설정
     await page.setUserAgent(
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/114.0.0.0 Safari/537.36"
@@ -37,13 +38,19 @@ export const getEnuriProducts = async (query: string) => {
     // 스크린샷 파일 확인 (Debug)
     // await page.screenshot({ path: "enuri_debug.png", fullPage: true });
 
-    // 최소 렌더링 확인
-    await page.waitForFunction(
-      () => {
-        return !!document.querySelector("li.prodItem[data-type='model']");
-      },
-      { timeout: 15000 }
-    );
+    // 최소 렌더링 확인 - 제품 목록이 있는 컨테이너 대기
+    try {
+      await page.waitForFunction(
+        () => {
+          return !!document.querySelector("li.prodItem[data-type='model']");
+        },
+        { timeout: 15000 }
+      );
+    } catch (e) {
+      throw new Error(
+        "에누리: 상품 리스트 영역 로딩 실패 (li.prodItem[data-type='model'])"
+      );
+    }
 
     // 상품 정보 추출
     const rawItems = await page.$$eval(
@@ -51,6 +58,7 @@ export const getEnuriProducts = async (query: string) => {
       (nodes) =>
         nodes.slice(0, 10).map((el, idx) => {
           const id = el.getAttribute("data-id") ?? `enuri_${idx}`;
+          const category = el.getAttribute("data-cate")?.trim() ?? "";
 
           const name =
             el.querySelector('a[data-type="modelname"]')?.textContent?.trim() ??
@@ -67,8 +75,7 @@ export const getEnuriProducts = async (query: string) => {
           const price = parseInt(priceText, 10);
 
           const originalPrice = price; // 원래가 없음 → 동일 처리
-          const seller =
-            el.querySelector(".opt--count")?.textContent?.trim() ?? "";
+          const seller = el.getAttribute("data-factory")?.trim() ?? "";
 
           const reviewRaw =
             el.querySelector(".item__etc--score")?.textContent ?? "";
@@ -92,6 +99,8 @@ export const getEnuriProducts = async (query: string) => {
             .filter(Boolean);
 
           return {
+            id,
+            category,
             name,
             price,
             originalPrice,
@@ -99,6 +108,8 @@ export const getEnuriProducts = async (query: string) => {
             seller,
             reviewCount,
             shippingInfo,
+            isSoldOut: false,
+            isFavorite: false,
             rating,
             badges,
           };
@@ -107,21 +118,17 @@ export const getEnuriProducts = async (query: string) => {
 
     const now = new Date().toISOString();
     const data = rawItems.map((item, idx) => ({
-      id: `product_enuri_${Date.now()}_${idx}`,
-      // category: "electronics",
       ...item,
-      isSoldOut: false,
-      isFavoite: false,
       createdAt: now,
       updatedAt: now,
     }));
 
     return data;
-  } catch (error) {
-    console.error("🛑 Enuri 크롤링 실패:", error);
-    throw new Error("에누리 크롤링 중 오류 발생");
+  } catch (err: any) {
+    console.error(`[enuri] 크롤링 오류: ${err.message}`);
+    // 어떤 검색어에서 실패했는지 추적
+    throw new Error(`[enuri] 크롤링 실패 (${query}): ${err.message}`);
   } finally {
-    await page.close();
     await browser.close();
   }
 };
