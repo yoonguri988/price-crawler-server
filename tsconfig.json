@@ -8,6 +8,8 @@
     "rootDir": "./src",
     "moduleResolution": "node",
     "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
     "types": ["node", "express"]
   },
   "include": ["src"],
