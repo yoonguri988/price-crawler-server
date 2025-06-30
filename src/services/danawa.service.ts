@@ -2,13 +2,14 @@
  * @return /danawa 다나와 크롤링
  */
 import { getBrowser } from "../utils/browser";
+import { ProductData } from "../types/product.type";
 
-const generateId = () =>
-  `product_danawa_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
-const now = new Date().toISOString();
-
-export const getDanawaProducts = async (query: string) => {
+export const getDanawaProducts = async (
+  query: string
+): Promise<ProductData[]> => {
   const browser = await getBrowser();
+  const encodedQuery = encodeURIComponent(query);
+  const url = `https://search.danawa.com/dsearch.php?query=${encodedQuery}`;
 
   try {
     const page = await browser.newPage();
@@ -22,10 +23,7 @@ export const getDanawaProducts = async (query: string) => {
       "Accept-Language": "ko-KR,ko;q=0.9",
     });
 
-    const searchUrl = `https://search.danawa.com/dsearch.php?query=${encodeURIComponent(
-      query
-    )}`;
-    await page.goto(searchUrl, { waitUntil: "networkidle2", timeout: 20000 });
+    await page.goto(url, { waitUntil: "domcontentloaded", timeout: 20000 });
 
     try {
       await page.waitForSelector("ul.product_list", { timeout: 15000 });
@@ -38,51 +36,43 @@ export const getDanawaProducts = async (query: string) => {
     await new Promise((res) => setTimeout(res, 2000));
 
     // 상품 정보 추출
-    const data = await page.$$eval("li.prod_item", (nodes) =>
+    const data: ProductData[] = await page.$$eval("li.prod_item", (nodes) =>
       nodes.slice(0, 5).map((el, idx) => {
         const productIdx = el.getAttribute("id")?.indexOf("productItem") || 0;
         const productNum = el.getAttribute("id")?.slice(productIdx + 11);
-        const id = `crawl_danawa_${productNum}`;
+        const id = `product_danawa_${productNum}`;
 
-        const elCate = el.querySelector(
-          `#productItem_categoryInfo_${productNum}`
-        );
-        const category =
-          elCate && elCate instanceof HTMLInputElement ? elCate.value : "";
-        const elPrice = el.querySelector(`#min_price_${productNum}`);
-        const price =
-          elPrice && elPrice instanceof HTMLInputElement ? elPrice.value : "";
+        const priceText =
+          el
+            .querySelector(`#min_price_${productNum}`)
+            ?.textContent?.replace(/[^0-9]/g, "") || "0";
+        const price = parseInt(priceText, 10);
+        const originalPrice = price;
 
-        // .product_main_info
-        // ├ .thumb_image
         let imageUrl =
           el.querySelector(".thumb_image img")?.getAttribute("src") ?? "";
-        // ├ .prod_info
+        const seller = "다나와";
+
         const name = el.querySelector(".prod_name")?.textContent?.trim() ?? "";
-        // └ .prod_pricelist
-        //   └ .prod_sub_info
-        //     └ .prod_sub_meta
-        //       └ .meta_item .mt_comment
-        //       └ .star-single .text__score
-        //       └ .star-single .text__review .text__number
-        const rating = el.querySelector(
-          `.prod_sub_info .prod_sub_meta .star-single .text__score`
-        )?.textContent;
-        const reviewCount = el.querySelector(
-          ".prod_sub_info .prod_sub_meta .star-single .text__review .text__number"
-        )?.textContent;
+        const reviewCountText =
+          el
+            .querySelector(
+              ".prod_sub_info .prod_sub_meta .star-single .text__review .text__number"
+            )
+            ?.textContent?.replace(/[^0-9]/g, "") || "0";
+        const reviewCount = parseInt(reviewCountText);
+        const shippingInfo = "";
 
         return {
           id,
-          category,
           name,
           price,
+          originalPrice,
           imageUrl,
-          // seller = "다나와 공식몰",
-          rating,
+          seller,
           reviewCount,
-          // badges = [{}],
-          // createdAt: creNow,
+          shippingInfo,
+          //badges,
         };
       })
     );
@@ -90,7 +80,6 @@ export const getDanawaProducts = async (query: string) => {
     return data;
   } catch (err: any) {
     console.error(`[danawa] 크롤링 오류: ${err.message}`);
-    // 어떤 검색어에서 실패했는지 추적
     throw new Error(`[danawa] 크롤링 실패 (${query}): ${err.message}`);
   } finally {
     await browser.close();
