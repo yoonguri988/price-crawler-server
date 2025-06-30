@@ -1,7 +1,18 @@
+/**
+ * @return /enuri 크롤링
+ *
+ * @todo
+ * #1 셀렉터 분석 후 아래 로직 구현
+ */
 import { getBrowser } from "../utils/browser";
+import { ProductData } from "../types/product.type";
 
-export const getEnuriProducts = async (query: string) => {
+export const getEnuriProducts = async (
+  query: string
+): Promise<ProductData[]> => {
   const browser = await getBrowser();
+  const encodedQuery = encodeURIComponent(query);
+  const url = `https://www.enuri.com/search.jsp?keyword=${encodedQuery}`;
 
   try {
     const page = await browser.newPage();
@@ -15,14 +26,7 @@ export const getEnuriProducts = async (query: string) => {
       "Accept-Language": "ko-KR,ko;q=0.9",
     });
 
-    // 검색 페이지 접속
-    const searchUrl = `https://www.enuri.com/search.jsp?keyword=${encodeURIComponent(
-      query
-    )}`;
-    await page.goto(searchUrl, {
-      waitUntil: "networkidle2",
-      timeout: 20000,
-    });
+    await page.goto(url, { waitUntil: "networkidle2", timeout: 0 });
 
     // 실제 리다이렉트된 URL 확인 및 재접근
     const redirectedUrl = page.url();
@@ -31,35 +35,31 @@ export const getEnuriProducts = async (query: string) => {
       timeout: 20000,
     });
 
-    // 스크롤 및 렌더링 시간 확보
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-    await new Promise((res) => setTimeout(res, 2000));
-
     // 스크린샷 파일 확인 (Debug)
     // await page.screenshot({ path: "enuri_debug.png", fullPage: true });
 
     // 최소 렌더링 확인 - 제품 목록이 있는 컨테이너 대기
     try {
-      await page.waitForFunction(
-        () => {
-          return !!document.querySelector("li.prodItem[data-type='model']");
-        },
-        { timeout: 15000 }
-      );
+      await page.waitForSelector("li.prodItem[data-type='model']", {
+        timeout: 15000,
+      });
     } catch (e) {
       throw new Error(
         "에누리: 상품 리스트 영역 로딩 실패 (li.prodItem[data-type='model'])"
       );
     }
 
-    // 상품 정보 추출
-    const rawItems = await page.$$eval(
-      "li.prodItem[data-type='model']",
-      (nodes) =>
-        nodes.slice(0, 10).map((el, idx) => {
-          const id = el.getAttribute("data-id") ?? `enuri_${idx}`;
-          const category = el.getAttribute("data-cate")?.trim() ?? "";
+    // 스크롤 및 렌더링 시간 확보
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await new Promise((res) => setTimeout(res, 2000));
 
+    // 상품 정보 추출
+    const data = await page.$$eval(
+      "li.prodItem[data-type='model']",
+      (items) => {
+        return Array.from(items).map((el, idx) => {
+          const id = el.getAttribute("data-id") ?? `enuri_${idx}`;
+          // const category = el.getAttribute("data-cate")?.trim() ?? "";
           const name =
             el.querySelector('a[data-type="modelname"]')?.textContent?.trim() ??
             "";
@@ -83,24 +83,24 @@ export const getEnuriProducts = async (query: string) => {
             reviewRaw.match(/\((\d+)\)/)?.[1] ?? "0"
           );
 
-          const ratingStyle =
-            el.querySelector(".ico-etc-star--score")?.getAttribute("style") ??
-            "width:0%";
-          const ratingPercent =
-            parseFloat(ratingStyle.replace(/[^\d.]/g, "")) || 0;
-          const rating = Math.round((ratingPercent / 100) * 5 * 10) / 10; // 소수점 1자리
+          // const ratingStyle =
+          //   el.querySelector(".ico-etc-star--score")?.getAttribute("style") ??
+          //   "width:0%";
+          // const ratingPercent =
+          //   parseFloat(ratingStyle.replace(/[^\d.]/g, "")) || 0;
+          // const rating = Math.round((ratingPercent / 100) * 5 * 10) / 10; // 소수점 1자리
 
           const shippingInfo =
             el.querySelector(".tag--today-depart i")?.textContent?.trim() ?? "";
 
-          const badgeNodes = el.querySelectorAll("span.ico");
-          const badges = Array.from(badgeNodes)
+          const badgeSpans = el.querySelectorAll("span.ico");
+          const badges = Array.from(badgeSpans)
             .map((b) => b.textContent?.trim())
-            .filter(Boolean);
+            .filter((text): text is string => !!text)
+            .map((text) => ({ text, color: "" }));
 
           return {
             id,
-            category,
             name,
             price,
             originalPrice,
@@ -108,20 +108,11 @@ export const getEnuriProducts = async (query: string) => {
             seller,
             reviewCount,
             shippingInfo,
-            isSoldOut: false,
-            isFavorite: false,
-            rating,
             badges,
           };
-        })
+        });
+      }
     );
-
-    const now = new Date().toISOString();
-    const data = rawItems.map((item, idx) => ({
-      ...item,
-      createdAt: now,
-      updatedAt: now,
-    }));
 
     return data;
   } catch (err: any) {
