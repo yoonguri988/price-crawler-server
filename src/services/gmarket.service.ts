@@ -1,33 +1,16 @@
 /**
- * @return /gmarket 네이버스토어 크롤링
+ * @return /gmarket 크롤링
  *
  * @todo
  * #1 셀렉터 분석 후 아래 로직 구현
  */
 import { getBrowser } from "../utils/browser";
 import fs from "fs/promises"; // HTML 저장용
-
-interface GmarketProduct {
-  id: string;
-  category?: string;
-  name: string;
-  price?: number;
-  originalPrice?: number;
-  imageUrl: string;
-  seller?: string;
-  reviewCount?: number;
-  shippingInfo?: string;
-  rating?: number;
-  badges?: { text: string; color: string }[];
-  createdAt?: string;
-  updatedAt?: string;
-  isSoldOut?: boolean;
-  isFavorite?: boolean;
-}
+import { ProductData } from "../types/product.type";
 
 export const getGmarketProducts = async (
   query: string
-): Promise<GmarketProduct[]> => {
+): Promise<ProductData[]> => {
   const browser = await getBrowser();
   const encodedQuery = encodeURIComponent(query);
   const url = `https://browse.gmarket.co.kr/search?keyword=${encodedQuery}`;
@@ -71,7 +54,7 @@ export const getGmarketProducts = async (
     // console.log("✅ HTML 및 스크린샷 저장 완료");
 
     // 상품 정보 추출 - 셀렉터 분석 및 데이터 파싱
-    const data: GmarketProduct[] = await page.$$eval(
+    const data: ProductData[] = await page.$$eval(
       "div.box__component-itemcard",
       (items) => {
         return Array.from(items).map((el, idx) => {
@@ -93,11 +76,15 @@ export const getGmarketProducts = async (
             el
               .querySelector("strong.text__value")
               ?.textContent?.replace(/[^0-9]/g, "") || "0";
+          const price = parseInt(priceText, 10);
 
-          const priceOriginText =
+          const originText =
             el
               .querySelector("div.box__price-original span.text__value")
               ?.textContent?.replace(/[^0-9]/g, "") || "0";
+          const originalPrice = originText
+            ? parseInt(originText, 10)
+            : parseInt(priceText, 10);
 
           const seller =
             el.querySelector("span.text__brand-seller")?.textContent?.trim() ||
@@ -146,21 +133,14 @@ export const getGmarketProducts = async (
 
           return {
             id,
-            category: "",
             name,
-            price: parseInt(priceText, 10),
-            originalPrice:
-              parseInt(priceOriginText, 10) || parseInt(priceText, 10),
+            price,
+            originalPrice,
             imageUrl,
             seller,
             reviewCount: parseInt(reviewCountText, 10),
             shippingInfo,
-            rating: undefined,
             badges,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-            isSoldOut: false,
-            isFavorite: false,
           };
         });
       }
