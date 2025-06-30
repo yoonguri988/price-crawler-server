@@ -1,0 +1,782 @@
+[
+  {
+    "id": "prd-001",
+    "category": "게임",
+    "name": "상품 이름 예시 1",
+    "price": 260474,
+    "originalPrice": 291975,
+    "imageUrl": "https://example.com/images/product1.jpg",
+    "seller": "MSI",
+    "reviewCount": 1657,
+    "shippingInfo": "배송비 3,000원",
+    "badges": [
+      {
+        "text": "베스트",
+        "color": "#FF0000"
+      },
+      {
+        "text": "할인",
+        "color": "#00CC66"
+      }
+    ]
+  },
+  {
+    "id": "prd-002",
+    "category": "주방용품",
+    "name": "상품 이름 예시 2",
+    "price": 196472,
+    "originalPrice": 236509,
+    "imageUrl": "https://example.com/images/product2.jpg",
+    "seller": "쿠첸",
+    "reviewCount": 383,
+    "shippingInfo": "무료배송",
+    "badges": [
+      {
+        "text": "할인",
+        "color": "#00CC66"
+      },
+      {
+        "text": "빠른배송",
+        "color": "#0099FF"
+      }
+    ]
+  },
+  {
+    "id": "prd-003",
+    "category": "게임",
+    "name": "상품 이름 예시 3",
+    "price": 243753,
+    "originalPrice": 256606,
+    "imageUrl": "https://example.com/images/product3.jpg",
+    "seller": "애플",
+    "reviewCount": 1580,
+    "shippingInfo": "배송비 3,000원",
+    "badges": [
+      {
+        "text": "인기상품",
+        "color": "#FFA500"
+      },
+      {
+        "text": "빠른배송",
+        "color": "#0099FF"
+      }
+    ]
+  },
+  {
+    "id": "prd-004",
+    "category": "주방용품",
+    "name": "상품 이름 예시 4",
+    "price": 263954,
+    "originalPrice": 286591,
+    "imageUrl": "https://example.com/images/product4.jpg",
+    "seller": "애플",
+    "reviewCount": 1262,
+    "shippingInfo": "배송비 3,000원",
+    "badges": [
+      {
+        "text": "할인",
+        "color": "#00CC66"
+      },
+      {
+        "text": "재고한정",
+        "color": "#800080"
+      }
+    ]
+  },
+  {
+    "id": "prd-005",
+    "category": "게임",
+    "name": "상품 이름 예시 5",
+    "price": 117074,
+    "originalPrice": 147280,
+    "imageUrl": "https://example.com/images/product5.jpg",
+    "seller": "LG전자",
+    "reviewCount": 592,
+    "shippingInfo": "무료배송",
+    "badges": [
+      {
+        "text": "인기상품",
+        "color": "#FFA500"
+      },
+      {
+        "text": "할인",
+        "color": "#00CC66"
+      }
+    ]
+  },
+  {
+    "id": "prd-006",
+    "category": "주방용품",
+    "name": "상품 이름 예시 6",
+    "price": 80128,
+    "originalPrice": 95011,
+    "imageUrl": "https://example.com/images/product6.jpg",
+    "seller": "애플",
+    "reviewCount": 579,
+    "shippingInfo": "무료배송",
+    "badges": [
+      {
+        "text": "인기상품",
+        "color": "#FFA500"
+      }
+    ]
+  },
+  {
+    "id": "prd-007",
+    "category": "게임",
+    "name": "상품 이름 예시 7",
+    "price": 143076,
+    "originalPrice": 169723,
+    "imageUrl": "https://example.com/images/product7.jpg",
+    "seller": "닌텐도",
+    "reviewCount": 1692,
+    "shippingInfo": "배송비 3,000원",
+    "badges": [
+      {
+        "text": "빠른배송",
+        "color": "#0099FF"
+      },
+      {
+        "text": "할인",
+        "color": "#00CC66"
+      }
+    ]
+  },
+  {
+    "id": "prd-008",
+    "category": "컴퓨터",
+    "name": "상품 이름 예시 8",
+    "price": 80547,
+    "originalPrice": 129902,
+    "imageUrl": "https://example.com/images/product8.jpg",
+    "seller": "삼성전자",
+    "reviewCount": 702,
+    "shippingInfo": "무료배송",
+    "badges": [
+      {
+        "text": "빠른배송",
+        "color": "#0099FF"
+      },
+      {
+        "text": "베스트",
+        "color": "#FF0000"
+      }
+    ]
+  },
+  {
+    "id": "prd-009",
+    "category": "주방용품",
+    "name": "상품 이름 예시 9",
+    "price": 107613,
+    "originalPrice": 117866,
+    "imageUrl": "https://example.com/images/product9.jpg",
+    "seller": "애플",
+    "reviewCount": 630,
+    "shippingInfo": "배송비 3,000원",
+    "badges": [
+      {
+        "text": "재고한정",
+        "color": "#800080"
+      }
+    ]
+  },
+  {
+    "id": "prd-010",
+    "category": "주방용품",
+    "name": "상품 이름 예시 10",
+    "price": 285738,
+    "originalPrice": 333512,
+    "imageUrl": "https://example.com/images/product10.jpg",
+    "seller": "애플",
+    "reviewCount": 787,
+    "shippingInfo": "배송비 3,000원",
+    "badges": [
+      {
+        "text": "할인",
+        "color": "#00CC66"
+      }
+    ]
+  },
+  {
+    "id": "prd-011",
+    "category": "뷰티",
+    "name": "상품 이름 예시 11",
+    "price": 109429,
+    "originalPrice": 143173,
+    "imageUrl": "https://example.com/images/product11.jpg",
+    "seller": "MSI",
+    "reviewCount": 569,
+    "shippingInfo": "배송비 3,000원",
+    "badges": [
+      {
+        "text": "인기상품",
+        "color": "#FFA500"
+      },
+      {
+        "text": "빠른배송",
+        "color": "#0099FF"
+      }
+    ]
+  },
+  {
+    "id": "prd-012",
+    "category": "주방용품",
+    "name": "상품 이름 예시 12",
+    "price": 179368,
+    "originalPrice": 202796,
+    "imageUrl": "https://example.com/images/product12.jpg",
+    "seller": "다이슨",
+    "reviewCount": 1191,
+    "shippingInfo": "무료배송",
+    "badges": [
+      {
+        "text": "인기상품",
+        "color": "#FFA500"
+      },
+      {
+        "text": "재고한정",
+        "color": "#800080"
+      }
+    ]
+  },
+  {
+    "id": "prd-013",
+    "category": "전자제품",
+    "name": "상품 이름 예시 13",
+    "price": 244817,
+    "originalPrice": 258213,
+    "imageUrl": "https://example.com/images/product13.jpg",
+    "seller": "닌텐도",
+    "reviewCount": 211,
+    "shippingInfo": "배송비 3,000원",
+    "badges": [
+      {
+        "text": "인기상품",
+        "color": "#FFA500"
+      },
+      {
+        "text": "빠른배송",
+        "color": "#0099FF"
+      }
+    ]
+  },
+  {
+    "id": "prd-014",
+    "category": "전자제품",
+    "name": "상품 이름 예시 14",
+    "price": 287428,
+    "originalPrice": 333447,
+    "imageUrl": "https://example.com/images/product14.jpg",
+    "seller": "삼성전자",
+    "reviewCount": 1560,
+    "shippingInfo": "무료배송",
+    "badges": [
+      {
+        "text": "베스트",
+        "color": "#FF0000"
+      },
+      {
+        "text": "빠른배송",
+        "color": "#0099FF"
+      }
+    ]
+  },
+  {
+    "id": "prd-015",
+    "category": "전자제품",
+    "name": "상품 이름 예시 15",
+    "price": 120842,
+    "originalPrice": 144897,
+    "imageUrl": "https://example.com/images/product15.jpg",
+    "seller": "샤오미",
+    "reviewCount": 425,
+    "shippingInfo": "배송비 3,000원",
+    "badges": [
+      {
+        "text": "인기상품",
+        "color": "#FFA500"
+      },
+      {
+        "text": "할인",
+        "color": "#00CC66"
+      }
+    ]
+  },
+  {
+    "id": "prd-016",
+    "category": "스포츠",
+    "name": "상품 이름 예시 16",
+    "price": 132181,
+    "originalPrice": 148138,
+    "imageUrl": "https://example.com/images/product16.jpg",
+    "seller": "애플",
+    "reviewCount": 335,
+    "shippingInfo": "배송비 3,000원",
+    "badges": [
+      {
+        "text": "빠른배송",
+        "color": "#0099FF"
+      }
+    ]
+  },
+  {
+    "id": "prd-017",
+    "category": "전자제품",
+    "name": "상품 이름 예시 17",
+    "price": 294781,
+    "originalPrice": 321943,
+    "imageUrl": "https://example.com/images/product17.jpg",
+    "seller": "쿠첸",
+    "reviewCount": 704,
+    "shippingInfo": "배송비 3,000원",
+    "badges": [
+      {
+        "text": "베스트",
+        "color": "#FF0000"
+      },
+      {
+        "text": "인기상품",
+        "color": "#FFA500"
+      }
+    ]
+  },
+  {
+    "id": "prd-018",
+    "category": "전자제품",
+    "name": "상품 이름 예시 18",
+    "price": 194985,
+    "originalPrice": 209854,
+    "imageUrl": "https://example.com/images/product18.jpg",
+    "seller": "다이슨",
+    "reviewCount": 984,
+    "shippingInfo": "무료배송",
+    "badges": [
+      {
+        "text": "재고한정",
+        "color": "#800080"
+      },
+      {
+        "text": "빠른배송",
+        "color": "#0099FF"
+      }
+    ]
+  },
+  {
+    "id": "prd-019",
+    "category": "게임",
+    "name": "상품 이름 예시 19",
+    "price": 108297,
+    "originalPrice": 119625,
+    "imageUrl": "https://example.com/images/product19.jpg",
+    "seller": "쿠첸",
+    "reviewCount": 1535,
+    "shippingInfo": "무료배송",
+    "badges": [
+      {
+        "text": "재고한정",
+        "color": "#800080"
+      }
+    ]
+  },
+  {
+    "id": "prd-020",
+    "category": "컴퓨터",
+    "name": "상품 이름 예시 20",
+    "price": 199455,
+    "originalPrice": 227070,
+    "imageUrl": "https://example.com/images/product20.jpg",
+    "seller": "애플",
+    "reviewCount": 766,
+    "shippingInfo": "무료배송",
+    "badges": [
+      {
+        "text": "할인",
+        "color": "#00CC66"
+      }
+    ]
+  },
+  {
+    "id": "prd-021",
+    "category": "패션",
+    "name": "상품 이름 예시 21",
+    "price": 119092,
+    "originalPrice": 135803,
+    "imageUrl": "https://example.com/images/product21.jpg",
+    "seller": "브라운",
+    "reviewCount": 742,
+    "shippingInfo": "무료배송",
+    "badges": [
+      {
+        "text": "인기상품",
+        "color": "#FFA500"
+      },
+      {
+        "text": "재고한정",
+        "color": "#800080"
+      }
+    ]
+  },
+  {
+    "id": "prd-022",
+    "category": "스포츠",
+    "name": "상품 이름 예시 22",
+    "price": 63095,
+    "originalPrice": 90141,
+    "imageUrl": "https://example.com/images/product22.jpg",
+    "seller": "LG전자",
+    "reviewCount": 554,
+    "shippingInfo": "무료배송",
+    "badges": [
+      {
+        "text": "할인",
+        "color": "#00CC66"
+      }
+    ]
+  },
+  {
+    "id": "prd-023",
+    "category": "게임",
+    "name": "상품 이름 예시 23",
+    "price": 217941,
+    "originalPrice": 253733,
+    "imageUrl": "https://example.com/images/product23.jpg",
+    "seller": "닌텐도",
+    "reviewCount": 1435,
+    "shippingInfo": "무료배송",
+    "badges": [
+      {
+        "text": "재고한정",
+        "color": "#800080"
+      }
+    ]
+  },
+  {
+    "id": "prd-024",
+    "category": "뷰티",
+    "name": "상품 이름 예시 24",
+    "price": 221908,
+    "originalPrice": 246052,
+    "imageUrl": "https://example.com/images/product24.jpg",
+    "seller": "샤오미",
+    "reviewCount": 1103,
+    "shippingInfo": "배송비 3,000원",
+    "badges": [
+      {
+        "text": "베스트",
+        "color": "#FF0000"
+      }
+    ]
+  },
+  {
+    "id": "prd-025",
+    "category": "게임",
+    "name": "상품 이름 예시 25",
+    "price": 70806,
+    "originalPrice": 92121,
+    "imageUrl": "https://example.com/images/product25.jpg",
+    "seller": "애플",
+    "reviewCount": 1454,
+    "shippingInfo": "배송비 3,000원",
+    "badges": [
+      {
+        "text": "빠른배송",
+        "color": "#0099FF"
+      }
+    ]
+  },
+  {
+    "id": "prd-026",
+    "category": "뷰티",
+    "name": "상품 이름 예시 26",
+    "price": 101128,
+    "originalPrice": 125733,
+    "imageUrl": "https://example.com/images/product26.jpg",
+    "seller": "닌텐도",
+    "reviewCount": 1908,
+    "shippingInfo": "무료배송",
+    "badges": [
+      {
+        "text": "할인",
+        "color": "#00CC66"
+      }
+    ]
+  },
+  {
+    "id": "prd-027",
+    "category": "스포츠",
+    "name": "상품 이름 예시 27",
+    "price": 237678,
+    "originalPrice": 262102,
+    "imageUrl": "https://example.com/images/product27.jpg",
+    "seller": "LG전자",
+    "reviewCount": 1965,
+    "shippingInfo": "배송비 3,000원",
+    "badges": [
+      {
+        "text": "재고한정",
+        "color": "#800080"
+      },
+      {
+        "text": "베스트",
+        "color": "#FF0000"
+      }
+    ]
+  },
+  {
+    "id": "prd-028",
+    "category": "패션",
+    "name": "상품 이름 예시 28",
+    "price": 191802,
+    "originalPrice": 221585,
+    "imageUrl": "https://example.com/images/product28.jpg",
+    "seller": "브라운",
+    "reviewCount": 872,
+    "shippingInfo": "무료배송",
+    "badges": [
+      {
+        "text": "인기상품",
+        "color": "#FFA500"
+      }
+    ]
+  },
+  {
+    "id": "prd-029",
+    "category": "패션",
+    "name": "상품 이름 예시 29",
+    "price": 289423,
+    "originalPrice": 308522,
+    "imageUrl": "https://example.com/images/product29.jpg",
+    "seller": "샤오미",
+    "reviewCount": 1926,
+    "shippingInfo": "배송비 3,000원",
+    "badges": [
+      {
+        "text": "재고한정",
+        "color": "#800080"
+      },
+      {
+        "text": "할인",
+        "color": "#00CC66"
+      }
+    ]
+  },
+  {
+    "id": "prd-030",
+    "category": "패션",
+    "name": "상품 이름 예시 30",
+    "price": 270329,
+    "originalPrice": 319089,
+    "imageUrl": "https://example.com/images/product30.jpg",
+    "seller": "쿠첸",
+    "reviewCount": 806,
+    "shippingInfo": "무료배송",
+    "badges": [
+      {
+        "text": "할인",
+        "color": "#00CC66"
+      },
+      {
+        "text": "인기상품",
+        "color": "#FFA500"
+      }
+    ]
+  },
+  {
+    "id": "prd-031",
+    "category": "전자제품",
+    "name": "상품 이름 예시 31",
+    "price": 114164,
+    "originalPrice": 163392,
+    "imageUrl": "https://example.com/images/product31.jpg",
+    "seller": "브라운",
+    "reviewCount": 1997,
+    "shippingInfo": "무료배송",
+    "badges": [
+      {
+        "text": "할인",
+        "color": "#00CC66"
+      },
+      {
+        "text": "빠른배송",
+        "color": "#0099FF"
+      }
+    ]
+  },
+  {
+    "id": "prd-032",
+    "category": "뷰티",
+    "name": "상품 이름 예시 32",
+    "price": 154639,
+    "originalPrice": 201243,
+    "imageUrl": "https://example.com/images/product32.jpg",
+    "seller": "삼성전자",
+    "reviewCount": 265,
+    "shippingInfo": "무료배송",
+    "badges": [
+      {
+        "text": "인기상품",
+        "color": "#FFA500"
+      },
+      {
+        "text": "베스트",
+        "color": "#FF0000"
+      }
+    ]
+  },
+  {
+    "id": "prd-033",
+    "category": "뷰티",
+    "name": "상품 이름 예시 33",
+    "price": 154399,
+    "originalPrice": 200377,
+    "imageUrl": "https://example.com/images/product33.jpg",
+    "seller": "삼성전자",
+    "reviewCount": 1082,
+    "shippingInfo": "무료배송",
+    "badges": [
+      {
+        "text": "할인",
+        "color": "#00CC66"
+      },
+      {
+        "text": "베스트",
+        "color": "#FF0000"
+      }
+    ]
+  },
+  {
+    "id": "prd-034",
+    "category": "컴퓨터",
+    "name": "상품 이름 예시 34",
+    "price": 202401,
+    "originalPrice": 243819,
+    "imageUrl": "https://example.com/images/product34.jpg",
+    "seller": "삼성전자",
+    "reviewCount": 1093,
+    "shippingInfo": "무료배송",
+    "badges": [
+      {
+        "text": "할인",
+        "color": "#00CC66"
+      },
+      {
+        "text": "빠른배송",
+        "color": "#0099FF"
+      }
+    ]
+  },
+  {
+    "id": "prd-035",
+    "category": "주방용품",
+    "name": "상품 이름 예시 35",
+    "price": 77904,
+    "originalPrice": 95042,
+    "imageUrl": "https://example.com/images/product35.jpg",
+    "seller": "LG전자",
+    "reviewCount": 1856,
+    "shippingInfo": "배송비 3,000원",
+    "badges": [
+      {
+        "text": "인기상품",
+        "color": "#FFA500"
+      },
+      {
+        "text": "할인",
+        "color": "#00CC66"
+      }
+    ]
+  },
+  {
+    "id": "prd-036",
+    "category": "스포츠",
+    "name": "상품 이름 예시 36",
+    "price": 208446,
+    "originalPrice": 245418,
+    "imageUrl": "https://example.com/images/product36.jpg",
+    "seller": "쿠첸",
+    "reviewCount": 1690,
+    "shippingInfo": "무료배송",
+    "badges": [
+      {
+        "text": "빠른배송",
+        "color": "#0099FF"
+      },
+      {
+        "text": "베스트",
+        "color": "#FF0000"
+      }
+    ]
+  },
+  {
+    "id": "prd-037",
+    "category": "생활가전",
+    "name": "상품 이름 예시 37",
+    "price": 218640,
+    "originalPrice": 248030,
+    "imageUrl": "https://example.com/images/product37.jpg",
+    "seller": "브라운",
+    "reviewCount": 1242,
+    "shippingInfo": "무료배송",
+    "badges": [
+      {
+        "text": "베스트",
+        "color": "#FF0000"
+      }
+    ]
+  },
+  {
+    "id": "prd-038",
+    "category": "패션",
+    "name": "상품 이름 예시 38",
+    "price": 163336,
+    "originalPrice": 173624,
+    "imageUrl": "https://example.com/images/product38.jpg",
+    "seller": "LG전자",
+    "reviewCount": 1093,
+    "shippingInfo": "무료배송",
+    "badges": [
+      {
+        "text": "베스트",
+        "color": "#FF0000"
+      }
+    ]
+  },
+  {
+    "id": "prd-039",
+    "category": "패션",
+    "name": "상품 이름 예시 39",
+    "price": 110879,
+    "originalPrice": 126354,
+    "imageUrl": "https://example.com/images/product39.jpg",
+    "seller": "브라운",
+    "reviewCount": 1666,
+    "shippingInfo": "배송비 3,000원",
+    "badges": [
+      {
+        "text": "재고한정",
+        "color": "#800080"
+      }
+    ]
+  },
+  {
+    "id": "prd-040",
+    "category": "스포츠",
+    "name": "상품 이름 예시 40",
+    "price": 234279,
+    "originalPrice": 247394,
+    "imageUrl": "https://example.com/images/product40.jpg",
+    "seller": "LG전자",
+    "reviewCount": 1302,
+    "shippingInfo": "무료배송",
+    "badges": [
+      {
+        "text": "재고한정",
+        "color": "#800080"
+      },
+      {
+        "text": "인기상품",
+        "color": "#FFA500"
+      }
+    ]
+  }
+]
