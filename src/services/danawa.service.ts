@@ -9,19 +9,13 @@ export const getDanawaProducts = async (
 ): Promise<ProductData[]> => {
   const browser = await getBrowser();
   const page = await browser.newPage();
+  const encodedQuery = encodeURIComponent(query);
+  const url = `https://search.danawa.com/dsearch.php?query=${encodedQuery}`;
 
   try {
     //⚠️ goto 실패 대응
     try {
-      await page.goto(
-        `https://search.danawa.com/dsearch.php?query=${encodeURIComponent(
-          query
-        )}`,
-        {
-          waitUntil: "domcontentloaded",
-          timeout: 15000,
-        }
-      );
+      await page.goto(url, { waitUntil: "domcontentloaded", timeout: 15000 });
     } catch (gotoErr) {
       console.log(`[DANAWA][ERROR] 페이지 이동 실패:`, gotoErr);
       return [];
