@@ -11,114 +11,87 @@ export const getEnuriProducts = async (
   query: string
 ): Promise<ProductData[]> => {
   const browser = await getBrowser();
+  const page = await browser.newPage();
   const encodedQuery = encodeURIComponent(query);
   const url = `https://www.enuri.com/search.jsp?keyword=${encodedQuery}`;
 
   try {
-    const page = await browser.newPage();
-
-    // 봇 탐지 회피 설정
-    await page.setUserAgent(
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/114.0.0.0 Safari/537.36"
-    );
-    await page.setViewport({ width: 1280, height: 800 });
-    await page.setExtraHTTPHeaders({
-      "Accept-Language": "ko-KR,ko;q=0.9",
-    });
-
-    await page.goto(url, { waitUntil: "networkidle2", timeout: 0 });
-
-    // 실제 리다이렉트된 URL 확인 및 재접근
-    const redirectedUrl = page.url();
-    await page.goto(redirectedUrl, {
-      waitUntil: "networkidle2",
-      timeout: 20000,
-    });
-
-    // 스크린샷 파일 확인 (Debug)
-    // await page.screenshot({ path: "enuri_debug.png", fullPage: true });
-
-    // 최소 렌더링 확인 - 제품 목록이 있는 컨테이너 대기
+    //⚠️ goto 실패 대응
     try {
-      await page.waitForSelector("li.prodItem[data-type='model']", {
-        timeout: 15000,
+      await page.goto(url, { waitUntil: "domcontentloaded", timeout: 20000 });
+      // 실제 리다이렉트된 URL 확인 및 재접근
+      const redirectedUrl = page.url();
+      await page.goto(redirectedUrl, {
+        waitUntil: "networkidle2",
+        timeout: 20000,
       });
-    } catch (e) {
-      throw new Error(
-        "에누리: 상품 리스트 영역 로딩 실패 (li.prodItem[data-type='model'])"
-      );
+    } catch (gotoErr) {
+      console.error("[ENURI][ERROR] 페이지 이동 실패:", gotoErr);
+      return [];
     }
 
-    // 스크롤 및 렌더링 시간 확보
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-    await new Promise((res) => setTimeout(res, 2000));
+    // ⚠️ waitForSelector 실패 대응
+    try {
+      await page.waitForSelector("li.prodItem[data-type='model']", {
+        timeout: 10000,
+      });
+    } catch (selectorErr) {
+      console.error("[ENURI][ERROR] Selector 로딩 실패:", selectorErr);
+      return [];
+    }
 
     // 상품 정보 추출
-    const data = await page.$$eval(
-      "li.prodItem[data-type='model']",
-      (items) => {
-        return Array.from(items).map((el, idx) => {
-          const id = el.getAttribute("data-id") ?? `enuri_${idx}`;
-          // const category = el.getAttribute("data-cate")?.trim() ?? "";
-          const name =
-            el.querySelector('a[data-type="modelname"]')?.textContent?.trim() ??
-            "";
+    const products: ProductData[] = await page.evaluate(() => {
+      const items = document.querySelectorAll(".listCont ul li:not(.adli)");
 
-          let imageUrl =
-            el.querySelector("div.item__thumb img")?.getAttribute("src") ?? "";
-          if (imageUrl.startsWith("//")) imageUrl = `https:${imageUrl}`;
+      return Array.from(items).map((el, idx) => {
+        const id = `product_enuri_${idx}`;
+        const name = el.querySelector(".tit")?.textContent?.trim() ?? "";
+        const priceText =
+          el
+            .querySelector(".price span")
+            ?.textContent?.replace(/[^0-9]/g, "") ?? "0";
+        const price = parseInt(priceText, 10);
+        const originalPrice = price;
+        const imageUrl =
+          el.querySelector(".thumb img")?.getAttribute("src") ?? "";
+        const seller = "에누리";
+        const reviewCount = 0;
 
-          const priceText =
-            el
-              .querySelector(".opt--price .tx--price")
-              ?.textContent?.replace(/[^\d]/g, "") ?? "0";
-          const price = parseInt(priceText, 10);
+        const shippingInfo =
+          el.querySelector(".tag--today-depart i")?.textContent?.trim() ?? "";
 
-          const originalPrice = price; // 원래가 없음 → 동일 처리
-          const seller = el.getAttribute("data-factory")?.trim() ?? "";
+        const badgeSpans = el.querySelectorAll("span.ico");
+        const badges = Array.from(badgeSpans)
+          .map((b) => b.textContent?.trim())
+          .filter((text): text is string => !!text)
+          .map((text) => ({ text, color: "" }));
 
-          const reviewRaw =
-            el.querySelector(".item__etc--score")?.textContent ?? "";
-          const reviewCount = parseInt(
-            reviewRaw.match(/\((\d+)\)/)?.[1] ?? "0"
-          );
+        return {
+          id,
+          name,
+          price,
+          originalPrice: price,
+          imageUrl,
+          seller,
+          reviewCount: 0,
+          shippingInfo: "",
+          badges,
+        };
+      });
+    });
 
-          // const ratingStyle =
-          //   el.querySelector(".ico-etc-star--score")?.getAttribute("style") ??
-          //   "width:0%";
-          // const ratingPercent =
-          //   parseFloat(ratingStyle.replace(/[^\d.]/g, "")) || 0;
-          // const rating = Math.round((ratingPercent / 100) * 5 * 10) / 10; // 소수점 1자리
+    //⚠️ 크롤링 결과 로깅
+    if (products.length === 0) {
+      console.warn(`[ENURI] '${query}' 결과 없음`);
+    } else {
+      console.log(`[ENURI] '${query}' 결과 ${products.length}건 수집됨`);
+    }
 
-          const shippingInfo =
-            el.querySelector(".tag--today-depart i")?.textContent?.trim() ?? "";
-
-          const badgeSpans = el.querySelectorAll("span.ico");
-          const badges = Array.from(badgeSpans)
-            .map((b) => b.textContent?.trim())
-            .filter((text): text is string => !!text)
-            .map((text) => ({ text, color: "" }));
-
-          return {
-            id,
-            name,
-            price,
-            originalPrice,
-            imageUrl,
-            seller,
-            reviewCount,
-            shippingInfo,
-            badges,
-          };
-        });
-      }
-    );
-
-    return data;
+    return products;
   } catch (err: any) {
-    console.error(`[enuri] 크롤링 오류: ${err.message}`);
-    // 어떤 검색어에서 실패했는지 추적
-    throw new Error(`[enuri] 크롤링 실패 (${query}): ${err.message}`);
+    console.error(`[ENURI][ERROR] 예기치 못한 오류: ${err.message}`);
+    return [];
   } finally {
     await browser.close();
   }
