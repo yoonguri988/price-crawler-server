@@ -7,5 +7,4 @@ export interface ProductData {
   seller?: string;
   reviewCount?: number;
   shippingInfo?: string;
-  badges?: { text: string; color: string }[];
 }
