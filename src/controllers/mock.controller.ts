@@ -38,7 +38,7 @@ function priceSort(products: ProductMockData[], sort?: string) {
 }
 
 export const getMockProducts = async (req: Request, res: Response) => {
-  const { sort, minPrice, maxPrice } = req.query;
+  const { sort, minPrice, maxPrice, page = "1", limit = "10" } = req.query;
 
   // query 파라미터 타입 가드로 변수 정리
   const s = typeof sort === "string" ? sort : undefined;
@@ -52,7 +52,19 @@ export const getMockProducts = async (req: Request, res: Response) => {
     // 정렬: price, reviewCount 등
     products = priceSort(products, s);
 
-    res.json({ total: products.length, data: products });
+    // 페이징 처리
+    const pageNum = parseInt(page as string, 10);
+    const limitNum = parseInt(limit as string, 10);
+    const start = (pageNum - 1) * limitNum;
+    const end = start + limitNum;
+    const pagedProducts = products.slice(start, end);
+
+    res.json({
+      total: products.length,
+      page: pageNum,
+      limit: limitNum,
+      data: pagedProducts,
+    });
   } catch (err) {
     res
       .status(500)
@@ -61,7 +73,7 @@ export const getMockProducts = async (req: Request, res: Response) => {
 };
 
 export const getMockFavorites = async (req: Request, res: Response) => {
-  const { sort, minPrice, maxPrice } = req.query;
+  const { sort, minPrice, maxPrice, page = "1", limit = "10" } = req.query;
 
   // query 파라미터 타입 가드로 변수 정리
   const s = typeof sort === "string" ? sort : undefined;
@@ -76,7 +88,19 @@ export const getMockFavorites = async (req: Request, res: Response) => {
     // 정렬: price, reviewCount 등
     products = priceSort(products, s);
 
-    res.json({ total: products.length, data: products });
+    // 페이징 처리
+    const pageNum = parseInt(page as string, 10);
+    const limitNum = parseInt(limit as string, 10);
+    const start = (pageNum - 1) * limitNum;
+    const end = start + limitNum;
+    const pagedProducts = products.slice(start, end);
+
+    res.json({
+      total: products.length,
+      page: pageNum,
+      limit: limitNum,
+      data: pagedProducts,
+    });
   } catch (err) {
     res
       .status(500)
@@ -85,7 +109,7 @@ export const getMockFavorites = async (req: Request, res: Response) => {
 };
 
 export const getMockNotifications = async (req: Request, res: Response) => {
-  const { sort, minPrice, maxPrice } = req.query;
+  const { sort, minPrice, maxPrice, page = "1", limit = "10" } = req.query;
 
   // query 파라미터 타입 가드로 변수 정리
   const s = typeof sort === "string" ? sort : undefined;
@@ -100,7 +124,19 @@ export const getMockNotifications = async (req: Request, res: Response) => {
     // 정렬: price, reviewCount 등
     products = priceSort(products, s);
 
-    res.json({ total: products.length, data: products });
+    // 페이징 처리
+    const pageNum = parseInt(page as string, 10);
+    const limitNum = parseInt(limit as string, 10);
+    const start = (pageNum - 1) * limitNum;
+    const end = start + limitNum;
+    const pagedProducts = products.slice(start, end);
+
+    res.json({
+      total: products.length,
+      page: pageNum,
+      limit: limitNum,
+      data: pagedProducts,
+    });
   } catch (err) {
     res
       .status(500)
