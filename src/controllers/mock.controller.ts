@@ -45,7 +45,12 @@ export const getMockProducts = async (req: Request, res: Response) => {
   const min = typeof minPrice === "string" ? minPrice : undefined;
   const max = typeof maxPrice === "string" ? maxPrice : undefined;
   try {
-    const data = await getMockData("mockProducts.json");
+    const fileName =
+      process.env.NODE_ENV === "test-missing"
+        ? "notExist.json"
+        : "mockProducts.json";
+
+    const data = await getMockData(fileName);
     let products: ProductMockData[] = data;
     // 필터: 최소/최대 가격
     products = PriceFilter(products, min, max);
