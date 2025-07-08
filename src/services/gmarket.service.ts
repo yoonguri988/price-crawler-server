@@ -1,12 +1,11 @@
 /**
+ * src/services/gmarket.service.ts
  * @return /gmarket 크롤링
- *
- * @todo
- * #1 셀렉터 분석 후 아래 로직 구현
  */
 import { getBrowser } from "../utils/browser";
-import fs from "fs/promises"; // HTML 저장용
 import { ProductData } from "../types/product.type";
+import fs from "fs";
+import path from "path";
 
 export const getGmarketProducts = async (
   query: string
@@ -17,6 +16,17 @@ export const getGmarketProducts = async (
   const url = `https://browse.gmarket.co.kr/search?keyword=${encodedQuery}`;
 
   try {
+    // User-Agent 설정: HeadlessChrome 탐지 우회를 위해 일반 브라우저 UA 사용
+    await page.setUserAgent(
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/114"
+    );
+    // Viewport 설정: 데스크톱 기반 뷰로 레이아웃 안정화
+    await page.setViewport({ width: 1280, height: 800 });
+    // HTTP 헤더 설정: 한글 페이지 노출 강제
+    await page.setExtraHTTPHeaders({
+      "Accept-Language": "ko-KR,ko;q=0.9",
+    });
+
     //⚠️ goto 실패 대응
     try {
       await page.goto(url, { waitUntil: "domcontentloaded", timeout: 0 });
@@ -24,9 +34,38 @@ export const getGmarketProducts = async (
       console.log(`[GMARKET][ERROR] 페이지 이동 실패:`, gotoErr);
       return [];
     }
-    // ⚠️ waitForSelector 실패 대응
+
     try {
-      await page.waitForSelector("div.box__component-itemcard", {
+      /**
+       * DEBUG 용 HTML 파일 생성
+       *
+       * const debugHtml = await page.content();
+       * const fs = await import("fs/promises");
+       * await fs.writeFile("./htmls/enuri_debug.html", debugHtml);
+       *
+       * console.log("[ENURI][DEBUG] HTML saved to enuri_debug.html");
+       */
+
+      const debugHtml = await page.content();
+      const fs = await import("fs/promises");
+      await fs.writeFile("./htmls/gmarket_debug.html", debugHtml);
+      console.log("[ENURI][DEBUG] HTML saved to gmarket_debug.html");
+
+      const hasListCont = await page.$(".section__module-wrap");
+      if (!hasListCont) {
+        console.warn(
+          "[ENURI][WARN] .section__module-wrap 요소가 탐색되지 않음"
+        );
+        return [];
+      }
+
+      await page.screenshot({
+        path: "./screenshot/gmarket_no_[section__module-wrap].png",
+        fullPage: true,
+      });
+
+      // ⚠️ waitForSelector 실패 대응
+      await page.waitForSelector("div.section__module-wrap", {
         timeout: 15000,
       });
     } catch (selectorErr) {
@@ -35,107 +74,81 @@ export const getGmarketProducts = async (
     }
 
     // 상품 정보 추출 - 셀렉터 분석 및 데이터 파싱
-    const products = await page.evaluate(() => {
-      const items = document.querySelectorAll(`div.box__component-itemcard`);
+    const data: ProductData[] = await page.$$eval(
+      ".box__component-itemcard--general > div.box__item-container",
+      (nodes) => {
+        return nodes.map((el, idx) => {
+          const text = el.querySelector(".box__image");
+          /* ID */
+          const id = `product_gmarket_${
+            text
+              ?.querySelector("a")
+              ?.getAttribute("data-montelena-goodscode") || idx
+          }`;
+          /* 이름 */
+          const name = text?.querySelector("img")?.getAttribute("alt") ?? "";
+          /* 이미지 주소 */
+          const imageUrl =
+            text?.querySelector("img")?.getAttribute("src") ?? "";
 
-      const results: any[] = [];
+          const priceEl = el.querySelector(".box__item-price");
+          /* 가격 */
+          const priceText =
+            priceEl
+              ?.querySelector(".box__price-seller strong")
+              ?.textContent?.replace(/[^0-9]/g, "") ?? "0";
+          const price = parseInt(priceText, 10);
 
-      items.forEach((item) => {
-        const numericId =
-          item
-            .querySelector("a.link__item")
-            ?.getAttribute("data-montelena-goodscode") || ""; // id 없을 경우 uuid로 fallback
-        const id = `product_gmarket_${numericId}`;
-        const name =
-          item.querySelector("span.text__item")?.textContent?.trim() || "";
+          /* 할인 전 가격 */
+          const originalPriceText =
+            priceEl
+              ?.querySelector(".box__price-original span.text__value")
+              ?.textContent?.replace(/[^0-9]/g, "") ?? "0";
 
-        const imgEl = item.querySelector("div.image__image img");
-        const imageUrl =
-          imgEl?.getAttribute("data-original") ||
-          imgEl?.getAttribute("src") ||
-          "";
+          let originalPrice = parseInt(originalPriceText, 10);
+          if (originalPrice === 0) originalPrice = price;
 
-        const priceText =
-          item
-            .querySelector("strong.text__value")
-            ?.textContent?.replace(/[^0-9]/g, "") || "0";
-        const price = parseInt(priceText, 10);
+          /* 파는 곳 */
+          const seller = "Gmarket";
+          /* 리뷰 개수 */
+          const reviewText =
+            el
+              .querySelector(".list-item__feedback-count span.text")
+              ?.textContent?.replace(/[^0-9]/g, "") ?? "0";
+          const reviewCount = parseInt(reviewText, 10);
 
-        const originText =
-          item
-            .querySelector("div.box__price-original span.text__value")
-            ?.textContent?.replace(/[^0-9]/g, "") || "0";
-        const originalPrice = originText
-          ? parseInt(originText, 10)
-          : parseInt(priceText, 10);
+          /* 쇼핑 정보 */
+          const shippingTags = el.querySelectorAll(
+            "div.box__item-arrival ul.list__tags li.list-item__tag"
+          );
+          const shippingInfo = Array.from(shippingTags)
+            .filter((item) => !item.classList.contains("list-item__tag--today"))
+            .map((span) => span.textContent?.trim() || "")
+            .filter(Boolean)
+            .join(" / ");
 
-        const seller =
-          item.querySelector("span.text__brand-seller")?.textContent?.trim() ||
-          "";
-
-        const reviewCountText =
-          item
-            .querySelector("span.text__review > span.text__count")
-            ?.textContent?.replace(/[^0-9]/g, "") || "0";
-
-        const shippingInfo =
-          Array.from(
-            item.querySelectorAll("ul.list__tags li.list-item__tag .text__tag")
-          )
-            .map((tag) => tag.textContent?.trim() || "")
-            .find((text) => text.includes("배송비")) || "";
-
-        // badges (오늘출발, 무료배송 등)
-        const badgeSpans = item.querySelectorAll(
-          "ul.list__tags li.list-item__tag .text__tag"
-        );
-
-        const badges = [
-          // span.text__tag 기반 배지 (텍스트형)
-          ...Array.from(item.querySelectorAll("span.text__tag"))
-            .map((span) => {
-              const text = span.textContent?.trim() || "";
-              const color =
-                span
-                  .getAttribute("style")
-                  ?.match(/color:\s*(#[0-9A-Fa-f]{6})/)?.[1] || "";
-              return text && !text.includes("배송비") ? { text, color } : null;
-            })
-            .filter((b): b is { text: string; color: string } => b !== null),
-
-          // img.alt 기반 배지 (무료배송 등 이미지형)
-          ...Array.from(item.querySelectorAll("span.text__tag img"))
-            .map((img) => {
-              const text = img.getAttribute("alt") || "";
-              return text ? { text, color: "" } : null;
-            })
-            .filter((b): b is { text: string; color: string } => b !== null),
-        ];
-
-        results.push({
-          id,
-          name,
-          price,
-          originalPrice,
-          imageUrl,
-          seller,
-          reviewCount: 0,
-          shippingInfo: "",
-          badges: [],
+          return {
+            id,
+            name,
+            price,
+            originalPrice,
+            imageUrl,
+            seller,
+            reviewCount,
+            shippingInfo,
+          };
         });
-      });
-
-      return results;
-    });
+      }
+    );
 
     //⚠️ 크롤링 결과 로깅
-    if (products.length === 0) {
+    if (data.length === 0) {
       console.warn(`[GMARKET] '${query}' 결과 없음`);
     } else {
-      console.log(`[GMARKET] '${query}' 결과 ${products.length}건 수집됨`);
+      console.log(`[GMARKET] '${query}' 결과 ${data.length}건 수집됨`);
     }
 
-    return products;
+    return data;
   } catch (err: any) {
     console.error(`[Gmarket] 크롤링 오류: ${err.message}`);
     throw new Error(`[Gmarket] 크롤링 실패 (${query}): ${err.message}`);
