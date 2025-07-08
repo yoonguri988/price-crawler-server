@@ -5,7 +5,7 @@ import fs from "fs/promises";
 import { ProductMockData } from "../types/product.type";
 
 const getMockData = async (filename: string) => {
-  const filePath = path.join(__dirname, "..", "mock", filename);
+  const filePath = path.join(__dirname, "..", "mocks", filename);
   const data = await fs.readFile(filePath, "utf-8");
   return JSON.parse(data);
 };
@@ -45,7 +45,12 @@ export const getMockProducts = async (req: Request, res: Response) => {
   const min = typeof minPrice === "string" ? minPrice : undefined;
   const max = typeof maxPrice === "string" ? maxPrice : undefined;
   try {
-    const data = await getMockData("mockProducts.json");
+    const fileName =
+      process.env.NODE_ENV === "test-missing"
+        ? "notExist.json"
+        : "mockProducts.json";
+
+    const data = await getMockData(fileName);
     let products: ProductMockData[] = data;
     // 필터: 최소/최대 가격
     products = PriceFilter(products, min, max);
