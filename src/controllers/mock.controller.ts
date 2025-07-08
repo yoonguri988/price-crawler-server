@@ -5,7 +5,7 @@ import fs from "fs/promises";
 import { ProductMockData } from "../types/product.type";
 
 const getMockData = async (filename: string) => {
-  const filePath = path.join(__dirname, "..", "mock", filename);
+  const filePath = path.join(__dirname, "..", "mocks", filename);
   const data = await fs.readFile(filePath, "utf-8");
   return JSON.parse(data);
 };
