@@ -3,6 +3,8 @@
  */
 import { getBrowser } from "../utils/browser";
 import { ProductData } from "../types/product.type";
+import fs from "fs";
+import path from "path";
 
 export const getDanawaProducts = async (
   query: string
@@ -13,6 +15,17 @@ export const getDanawaProducts = async (
   const url = `https://search.danawa.com/dsearch.php?query=${encodedQuery}`;
 
   try {
+    // User-Agent 설정: HeadlessChrome 탐지 우회를 위해 일반 브라우저 UA 사용
+    await page.setUserAgent(
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/114"
+    );
+    // Viewport 설정: 데스크톱 기반 뷰로 레이아웃 안정화
+    await page.setViewport({ width: 1280, height: 800 });
+    // HTTP 헤더 설정: 한글 페이지 노출 강제
+    await page.setExtraHTTPHeaders({
+      "Accept-Language": "ko-KR,ko;q=0.9",
+    });
+
     //⚠️ goto 실패 대응
     try {
       await page.goto(url, { waitUntil: "domcontentloaded", timeout: 15000 });
@@ -21,65 +34,101 @@ export const getDanawaProducts = async (
       return [];
     }
 
-    // ⚠️ waitForSelector 실패 대응
     try {
-      await page.waitForSelector("ul.product_list", { timeout: 15000 });
+      /**
+       * DEBUG 용 HTML 파일 생성
+       *
+       * const debugHtml = await page.content();
+       * const fs = await import("fs/promises");
+       * await fs.writeFile("./htmls/[crawler]_debug.html", debugHtml);
+       *
+       * console.log("[ENURI][DEBUG] HTML saved to [crawler]_debug.html");
+       */
+
+      const debugHtml = await page.content();
+      const fs = await import("fs/promises");
+      await fs.writeFile("./htmls/danawa_debug.html", debugHtml);
+      console.log("[ENURI][DEBUG] HTML saved to danawa_debug.html");
+
+      const hasListCont = await page.$(".main_prodlist");
+      if (!hasListCont) {
+        console.warn("[ENURI][WARN] .main_prodlist 요소가 탐색되지 않음");
+        return [];
+      }
+
+      await page.screenshot({
+        path: "./screenshot/danawa_no_[main_prodlist].png",
+        fullPage: true,
+      });
+
+      // ⚠️ waitForSelector 실패 대응
+      await page.waitForSelector(".main_prodlist", {
+        timeout: 15000,
+      });
     } catch (selectorErr) {
       console.log("[DANAWA][ERROR] Selector 로딩 실패:", selectorErr);
       return [];
     }
 
-    // 상품 정보 추출
-    const products = await page.evaluate(() => {
-      const items = document.querySelectorAll(
-        "div.main_prodlist.main_prodlist_list > ul > li.prod_item.prod_layer"
-      );
-      const results: any[] = [];
+    // 사용자 기준 데이터 추출 로직 유지, ProductData에 맞게 정제
+    const data: ProductData[] = await page.$$eval(
+      "ul.product_list li.prod_item",
+      (nodes) => {
+        return nodes
+          .filter((el) => el.getAttribute("id")?.includes("productItem"))
+          .map((el, idx) => {
+            const itemNum =
+              el.getAttribute("id")?.replace(/[^0-9]/g, "") ?? idx;
+            /* ID */
+            const id = `product_danawa_${itemNum}`;
+            /* 이름 */
+            const name =
+              el.querySelector(".prod_info .prod_name a")?.textContent ?? "";
+            /* 이미지 주소 */
+            const imageUrl =
+              el.querySelector(`.thumb_image a img`)?.getAttribute("src") ?? "";
+            /* 가격 */
+            const priceText =
+              el
+                .querySelector(`input[id='min_price_${itemNum}']`)
+                ?.getAttribute("value")
+                ?.replace(/[^0-9]/g, "") ?? "0";
+            const price = parseInt(priceText, 10);
+            /* 할인 전 가격 */
+            const originalPrice = price;
+            /* 파는 곳 */
+            const seller = "danawa";
+            /* 리뷰 개수 */
+            const reviewText =
+              el
+                .querySelector(".text__review span.text__number")
+                ?.textContent?.replace(/[^0-9]/g, "") ?? "0";
+            const reviewCount = parseInt(reviewText, 10);
+            /* 쇼핑 정보 */
+            const shippingInfo = "";
 
-      items.forEach((item) => {
-        const name =
-          item.querySelector("p.prod_name > a")?.textContent?.trim() || "";
-        const priceText =
-          item
-            .querySelector("p.price_sect > a")
-            ?.textContent?.replace(/[^0-9]/g, "") || "0";
-        const price = parseInt(priceText, 10);
-        const imageUrl =
-          item
-            .querySelector("a.thumb_link > img")
-            ?.getAttribute("data-original") || "";
-        const seller =
-          item
-            .querySelector(
-              "div.prod_sub_info > p.prod_sub_meta > span.meta_item > a"
-            )
-            ?.textContent?.trim() || "";
-
-        results.push({
-          id: crypto.randomUUID(),
-          category: "",
-          name,
-          price,
-          originalPrice: price,
-          imageUrl,
-          seller,
-          reviewCount: 0,
-          shippingInfo: "",
-          badges: [],
-        });
-      });
-
-      return results;
-    });
+            return {
+              id,
+              name,
+              price,
+              originalPrice,
+              imageUrl,
+              seller,
+              reviewCount,
+              shippingInfo,
+            };
+          });
+      }
+    );
 
     //⚠️ 크롤링 결과 로깅
-    if (products.length === 0) {
+    if (data.length === 0) {
       console.warn(`[DANAWA] '${query}' 결과 없음`);
     } else {
-      console.log(`[DANAWA] '${query}' 결과 ${products.length}건 수집됨`);
+      console.log(`[DANAWA] '${query}' 결과 ${data.length}건 수집됨`);
     }
 
-    return products;
+    return data;
   } catch (error) {
     console.error("[DANAWA][ERROR] 예기치 못한 오류:", error);
     return [];

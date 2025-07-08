@@ -46,11 +46,6 @@ export const getGmarketProducts = async (
        * console.log("[ENURI][DEBUG] HTML saved to enuri_debug.html");
        */
 
-      const debugHtml = await page.content();
-      const fs = await import("fs/promises");
-      await fs.writeFile("./htmls/gmarket_debug.html", debugHtml);
-      console.log("[ENURI][DEBUG] HTML saved to gmarket_debug.html");
-
       const hasListCont = await page.$(".section__module-wrap");
       if (!hasListCont) {
         console.warn(
@@ -73,7 +68,7 @@ export const getGmarketProducts = async (
       return [];
     }
 
-    // 상품 정보 추출 - 셀렉터 분석 및 데이터 파싱
+    // 사용자 기준 데이터 추출 로직 유지, ProductData에 맞게 정제
     const data: ProductData[] = await page.$$eval(
       ".box__component-itemcard--general > div.box__item-container",
       (nodes) => {
