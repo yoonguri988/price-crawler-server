@@ -59,10 +59,15 @@ export const getMockProducts = async (req: Request, res: Response) => {
     const end = start + limitNum;
     const pagedProducts = products.slice(start, end);
 
+    // 응답 포맷 통일
     res.json({
-      total: products.length,
-      page: pageNum,
-      limit: limitNum,
+      status: "success",
+      message: "mock products fetched",
+      meta: {
+        total: products.length,
+        page: pageNum,
+        limit: limitNum,
+      },
       data: pagedProducts,
     });
   } catch (err) {
@@ -95,10 +100,15 @@ export const getMockFavorites = async (req: Request, res: Response) => {
     const end = start + limitNum;
     const pagedProducts = products.slice(start, end);
 
+    // 응답 포맷 통일
     res.json({
-      total: products.length,
-      page: pageNum,
-      limit: limitNum,
+      status: "success",
+      message: "mock products fetched",
+      meta: {
+        total: products.length,
+        page: pageNum,
+        limit: limitNum,
+      },
       data: pagedProducts,
     });
   } catch (err) {
@@ -131,10 +141,15 @@ export const getMockNotifications = async (req: Request, res: Response) => {
     const end = start + limitNum;
     const pagedProducts = products.slice(start, end);
 
+    // 응답 포맷 통일
     res.json({
-      total: products.length,
-      page: pageNum,
-      limit: limitNum,
+      status: "success",
+      message: "mock products fetched",
+      meta: {
+        total: products.length,
+        page: pageNum,
+        limit: limitNum,
+      },
       data: pagedProducts,
     });
   } catch (err) {
