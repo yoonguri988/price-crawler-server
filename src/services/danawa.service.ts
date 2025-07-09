@@ -48,13 +48,12 @@ export const getDanawaProducts = async (
       const hasListCont = await page.$(".main_prodlist");
       if (!hasListCont) {
         console.warn("[ENURI][WARN] .main_prodlist 요소가 탐색되지 않음");
+        // await page.screenshot({
+        //   path: "./screenshot/danawa_no_[main_prodlist].png",
+        //   fullPage: true,
+        // });
         return [];
       }
-
-      await page.screenshot({
-        path: "./screenshot/danawa_no_[main_prodlist].png",
-        fullPage: true,
-      });
 
       // ⚠️ waitForSelector 실패 대응
       await page.waitForSelector(".main_prodlist", {
