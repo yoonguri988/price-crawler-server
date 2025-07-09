@@ -51,13 +51,12 @@ export const getGmarketProducts = async (
         console.warn(
           "[ENURI][WARN] .section__module-wrap 요소가 탐색되지 않음"
         );
+        // await page.screenshot({
+        //   path: "./screenshot/gmarket_no_[section__module-wrap].png",
+        //   fullPage: true,
+        // });
         return [];
       }
-
-      await page.screenshot({
-        path: "./screenshot/gmarket_no_[section__module-wrap].png",
-        fullPage: true,
-      });
 
       // ⚠️ waitForSelector 실패 대응
       await page.waitForSelector("div.section__module-wrap", {

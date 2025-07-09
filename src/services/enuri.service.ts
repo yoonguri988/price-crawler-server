@@ -54,20 +54,13 @@ export const getEnuriProducts = async (
       const hasListCont = await page.$(".goods-list");
       if (!hasListCont) {
         console.warn("[ENURI][WARN] .goods-list 요소가 탐색되지 않음");
-        await page.screenshot({
-          path: "enuri_no_goodsList.png",
-          fullPage: true,
-        });
+        // await page.screenshot({
+        //   path: "enuri_no_goodsList.png",
+        //   fullPage: true,
+        // });
         return [];
       }
-
       await page.waitForSelector(".goods-list", { timeout: 10000 });
-
-      // 문제 파악을 위한 screenshot
-      await page.screenshot({
-        path: `./screenshot/enuri_debug.png`,
-        fullPage: true,
-      });
     } catch (selectorErr) {
       console.error("[ENURI][ERROR] Selector 로딩 실패:", selectorErr);
       return [];
