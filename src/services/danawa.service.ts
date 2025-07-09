@@ -45,11 +45,6 @@ export const getDanawaProducts = async (
        * console.log("[ENURI][DEBUG] HTML saved to [crawler]_debug.html");
        */
 
-      const debugHtml = await page.content();
-      const fs = await import("fs/promises");
-      await fs.writeFile("./htmls/danawa_debug.html", debugHtml);
-      console.log("[ENURI][DEBUG] HTML saved to danawa_debug.html");
-
       const hasListCont = await page.$(".main_prodlist");
       if (!hasListCont) {
         console.warn("[ENURI][WARN] .main_prodlist 요소가 탐색되지 않음");

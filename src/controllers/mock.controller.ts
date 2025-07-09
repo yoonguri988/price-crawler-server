@@ -1,79 +1,88 @@
 // src/controllers/mock.controller.ts
 import { Request, Response } from "express";
-import path from "path";
-import fs from "fs/promises";
-import { ProductMockData } from "../types/product.type";
+import {
+  ProductMockData,
+  FavoriteMockData,
+  NotificationMockData,
+} from "../types/product.type";
+/** getMockData JSON */
+import mockProducts from "../mocks/mockProducts.json";
+import mockFavorites from "../mocks/mockFavorites.json";
+import mockNotifications from "../mocks/mockNotifications.json";
 
 const getMockData = async (filename: string) => {
-  const filePath = path.join(__dirname, "..", "mocks", filename);
-  const data = await fs.readFile(filePath, "utf-8");
-  return JSON.parse(data);
+  if (filename === "mockProducts.json") return mockProducts;
+  if (filename === "mockFavorites.json") return mockFavorites;
+  if (filename === "mockNotifications.json") return mockNotifications;
+  return [];
 };
 
-function PriceFilter(
+/**
+ * @description 최소/최대 가격 필터링
+ */
+const filterByPrice = (
   products: ProductMockData[],
   minPrice?: string,
   maxPrice?: string
-) {
-  if (minPrice) products = products.filter((p) => p.price >= Number(minPrice));
-  if (maxPrice) products = products.filter((p) => p.price <= Number(maxPrice));
-  return products;
-}
+) => {
+  return products.filter((p) => {
+    const price = p.price ?? 0;
+    return (
+      (!minPrice || price >= Number(minPrice)) &&
+      (!maxPrice || price <= Number(maxPrice))
+    );
+  });
+};
 
-function priceSort(products: ProductMockData[], sort?: string) {
-  if (sort === "price") {
-    products = products.sort((a, b) => (a.price ?? 0) - (b.price ?? 0));
-  } else if (sort === "-price") {
-    products = products.sort((a, b) => (b.price ?? 0) - (a.price ?? 0));
-  } else if (sort === "review") {
-    products = products.sort(
-      (a, b) => (a.reviewCount ?? 0) - (b.reviewCount ?? 0)
-    );
-  } else if (sort === "-review") {
-    products = products.sort(
-      (a, b) => (b.reviewCount ?? 0) - (a.reviewCount ?? 0)
-    );
+/**
+ * @description 정렬 필드에 따라 정렬 처리
+ */
+const sortProducts = (products: ProductMockData[], sort?: string) => {
+  switch (sort) {
+    case "price":
+      return products.sort((a, b) => (a.price ?? 0) - (b.price ?? 0));
+    case "-price":
+      return products.sort((a, b) => (b.price ?? 0) - (a.price ?? 0));
+    case "review":
+      return products.sort(
+        (a, b) => (a.reviewCount ?? 0) - (b.reviewCount ?? 0)
+      );
+    case "-review":
+      return products.sort(
+        (a, b) => (b.reviewCount ?? 0) - (a.reviewCount ?? 0)
+      );
+    default:
+      return products;
   }
-  return products;
-}
+};
 
-export const getMockProducts = async (req: Request, res: Response) => {
+const paginate = <T>(data: T[], page: number, limit: number) => {
+  const start = (page - 1) * limit;
+  return data.slice(start, start + limit);
+};
+
+/**
+ * @route GET /api/mock/products
+ */
+export const getMockProducts = (req: Request, res: Response) => {
   const { sort, minPrice, maxPrice, page = "1", limit = "10" } = req.query;
-
-  // query 파라미터 타입 가드로 변수 정리
   const s = typeof sort === "string" ? sort : undefined;
   const min = typeof minPrice === "string" ? minPrice : undefined;
   const max = typeof maxPrice === "string" ? maxPrice : undefined;
+  const pageNum = parseInt(page as string, 10);
+  const limitNum = parseInt(limit as string, 10);
+
   try {
-    const fileName =
-      process.env.NODE_ENV === "test-missing"
-        ? "notExist.json"
-        : "mockProducts.json";
+    let data: ProductMockData[] = mockProducts;
+    data = filterByPrice(data, min, max);
+    data = sortProducts(data, s);
+    const paged = paginate(data, pageNum, limitNum);
 
-    const data = await getMockData(fileName);
-    let products: ProductMockData[] = data;
-    // 필터: 최소/최대 가격
-    products = PriceFilter(products, min, max);
-    // 정렬: price, reviewCount 등
-    products = priceSort(products, s);
-
-    // 페이징 처리
-    const pageNum = parseInt(page as string, 10);
-    const limitNum = parseInt(limit as string, 10);
-    const start = (pageNum - 1) * limitNum;
-    const end = start + limitNum;
-    const pagedProducts = products.slice(start, end);
-
-    // 응답 포맷 통일
     res.json({
       status: "success",
-      message: "mock products fetched",
-      meta: {
-        total: products.length,
-        page: pageNum,
-        limit: limitNum,
-      },
-      data: pagedProducts,
+      message: "mockProducts fetched",
+      meta: { total: data.length, page: pageNum, limit: limitNum },
+      data: paged,
     });
   } catch (err) {
     res
@@ -82,39 +91,22 @@ export const getMockProducts = async (req: Request, res: Response) => {
   }
 };
 
-export const getMockFavorites = async (req: Request, res: Response) => {
-  const { sort, minPrice, maxPrice, page = "1", limit = "10" } = req.query;
-
-  // query 파라미터 타입 가드로 변수 정리
-  const s = typeof sort === "string" ? sort : undefined;
-  const min = typeof minPrice === "string" ? minPrice : undefined;
-  const max = typeof maxPrice === "string" ? maxPrice : undefined;
+/**
+ * @route GET /api/mock/favorites
+ */
+export const getMockFavorites = (req: Request, res: Response) => {
+  const { page = "1", limit = "10" } = req.query;
+  const pageNum = parseInt(page as string, 10);
+  const limitNum = parseInt(limit as string, 10);
 
   try {
-    const data = await getMockData("mockFavorites.json");
-    let products: ProductMockData[] = data;
-    // 필터: 최소/최대 가격
-    products = PriceFilter(products, min, max);
-    // 정렬: price, reviewCount 등
-    products = priceSort(products, s);
-
-    // 페이징 처리
-    const pageNum = parseInt(page as string, 10);
-    const limitNum = parseInt(limit as string, 10);
-    const start = (pageNum - 1) * limitNum;
-    const end = start + limitNum;
-    const pagedProducts = products.slice(start, end);
-
-    // 응답 포맷 통일
+    const data: FavoriteMockData[] = mockFavorites;
+    const paged = paginate(data, pageNum, limitNum);
     res.json({
       status: "success",
-      message: "mock products fetched",
-      meta: {
-        total: products.length,
-        page: pageNum,
-        limit: limitNum,
-      },
-      data: pagedProducts,
+      message: "mockFavorites fetched",
+      meta: { total: data.length, page: pageNum, limit: limitNum },
+      data: paged,
     });
   } catch (err) {
     res
@@ -122,40 +114,22 @@ export const getMockFavorites = async (req: Request, res: Response) => {
       .json({ error: "mockFavorites 로드 실패", detail: String(err) });
   }
 };
-
-export const getMockNotifications = async (req: Request, res: Response) => {
-  const { sort, minPrice, maxPrice, page = "1", limit = "10" } = req.query;
-
-  // query 파라미터 타입 가드로 변수 정리
-  const s = typeof sort === "string" ? sort : undefined;
-  const min = typeof minPrice === "string" ? minPrice : undefined;
-  const max = typeof maxPrice === "string" ? maxPrice : undefined;
+/**
+ * @route GET /api/mock/notifications
+ */
+export const getMockNotifications = (req: Request, res: Response) => {
+  const { page = "1", limit = "10" } = req.query;
+  const pageNum = parseInt(page as string, 10);
+  const limitNum = parseInt(limit as string, 10);
 
   try {
-    const data = await getMockData("mockNotifications.json");
-    let products: ProductMockData[] = data;
-    // 필터: 최소/최대 가격
-    products = PriceFilter(products, min, max);
-    // 정렬: price, reviewCount 등
-    products = priceSort(products, s);
-
-    // 페이징 처리
-    const pageNum = parseInt(page as string, 10);
-    const limitNum = parseInt(limit as string, 10);
-    const start = (pageNum - 1) * limitNum;
-    const end = start + limitNum;
-    const pagedProducts = products.slice(start, end);
-
-    // 응답 포맷 통일
+    const data: NotificationMockData[] = mockNotifications;
+    const paged = paginate(data, pageNum, limitNum);
     res.json({
       status: "success",
-      message: "mock products fetched",
-      meta: {
-        total: products.length,
-        page: pageNum,
-        limit: limitNum,
-      },
-      data: pagedProducts,
+      message: "mockNotifications fetched",
+      meta: { total: data.length, page: pageNum, limit: limitNum },
+      data: paged,
     });
   } catch (err) {
     res

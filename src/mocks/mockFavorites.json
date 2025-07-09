@@ -1,201 +1,201 @@
 [
   {
-    "id": "fav-001",
+    "productId": "prd-001",
     "name": "즐겨찾기 상품 1",
     "registeredAt": "2025-05-04"
   },
   {
-    "id": "fav-002",
+    "productId": "prd-002",
     "name": "즐겨찾기 상품 2",
     "registeredAt": "2025-04-23"
   },
   {
-    "id": "fav-003",
+    "productId": "prd-003",
     "name": "즐겨찾기 상품 3",
     "registeredAt": "2025-05-12"
   },
   {
-    "id": "fav-004",
+    "productId": "prd-004",
     "name": "즐겨찾기 상품 4",
     "registeredAt": "2025-03-24"
   },
   {
-    "id": "fav-005",
+    "productId": "prd-005",
     "name": "즐겨찾기 상품 5",
     "registeredAt": "2025-04-30"
   },
   {
-    "id": "fav-006",
+    "productId": "prd-006",
     "name": "즐겨찾기 상품 6",
     "registeredAt": "2025-05-12"
   },
   {
-    "id": "fav-007",
+    "productId": "prd-007",
     "name": "즐겨찾기 상품 7",
     "registeredAt": "2025-04-04"
   },
   {
-    "id": "fav-008",
+    "productId": "prd-008",
     "name": "즐겨찾기 상품 8",
     "registeredAt": "2025-04-23"
   },
   {
-    "id": "fav-009",
+    "productId": "prd-009",
     "name": "즐겨찾기 상품 9",
     "registeredAt": "2025-06-05"
   },
   {
-    "id": "fav-010",
+    "productId": "prd-010",
     "name": "즐겨찾기 상품 10",
     "registeredAt": "2025-06-03"
   },
   {
-    "id": "fav-011",
+    "productId": "prd-011",
     "name": "즐겨찾기 상품 11",
     "registeredAt": "2025-04-29"
   },
   {
-    "id": "fav-012",
+    "productId": "prd-012",
     "name": "즐겨찾기 상품 12",
     "registeredAt": "2025-04-17"
   },
   {
-    "id": "fav-013",
+    "productId": "prd-013",
     "name": "즐겨찾기 상품 13",
     "registeredAt": "2025-06-09"
   },
   {
-    "id": "fav-014",
+    "productId": "prd-014",
     "name": "즐겨찾기 상품 14",
     "registeredAt": "2025-05-11"
   },
   {
-    "id": "fav-015",
+    "productId": "prd-015",
     "name": "즐겨찾기 상품 15",
     "registeredAt": "2025-06-05"
   },
   {
-    "id": "fav-016",
+    "productId": "prd-016",
     "name": "즐겨찾기 상품 16",
     "registeredAt": "2025-04-09"
   },
   {
-    "id": "fav-017",
+    "productId": "prd-017",
     "name": "즐겨찾기 상품 17",
     "registeredAt": "2025-05-03"
   },
   {
-    "id": "fav-018",
+    "productId": "prd-018",
     "name": "즐겨찾기 상품 18",
     "registeredAt": "2025-06-05"
   },
   {
-    "id": "fav-019",
+    "productId": "prd-019",
     "name": "즐겨찾기 상품 19",
     "registeredAt": "2025-06-24"
   },
   {
-    "id": "fav-020",
+    "productId": "prd-020",
     "name": "즐겨찾기 상품 20",
     "registeredAt": "2025-03-22"
   },
   {
-    "id": "fav-021",
+    "productId": "prd-021",
     "name": "즐겨찾기 상품 21",
     "registeredAt": "2025-06-09"
   },
   {
-    "id": "fav-022",
+    "productId": "prd-022",
     "name": "즐겨찾기 상품 22",
     "registeredAt": "2025-05-02"
   },
   {
-    "id": "fav-023",
+    "productId": "prd-023",
     "name": "즐겨찾기 상품 23",
     "registeredAt": "2025-04-03"
   },
   {
-    "id": "fav-024",
+    "productId": "prd-024",
     "name": "즐겨찾기 상품 24",
     "registeredAt": "2025-06-06"
   },
   {
-    "id": "fav-025",
+    "productId": "prd-025",
     "name": "즐겨찾기 상품 25",
     "registeredAt": "2025-05-11"
   },
   {
-    "id": "fav-026",
+    "productId": "prd-026",
     "name": "즐겨찾기 상품 26",
     "registeredAt": "2025-06-02"
   },
   {
-    "id": "fav-027",
+    "productId": "prd-027",
     "name": "즐겨찾기 상품 27",
     "registeredAt": "2025-05-15"
   },
   {
-    "id": "fav-028",
+    "productId": "prd-028",
     "name": "즐겨찾기 상품 28",
     "registeredAt": "2025-05-04"
   },
   {
-    "id": "fav-029",
+    "productId": "prd-029",
     "name": "즐겨찾기 상품 29",
     "registeredAt": "2025-05-28"
   },
   {
-    "id": "fav-030",
+    "productId": "prd-030",
     "name": "즐겨찾기 상품 30",
     "registeredAt": "2025-05-12"
   },
   {
-    "id": "fav-031",
+    "productId": "prd-031",
     "name": "즐겨찾기 상품 31",
     "registeredAt": "2025-03-30"
   },
   {
-    "id": "fav-032",
+    "productId": "prd-032",
     "name": "즐겨찾기 상품 32",
     "registeredAt": "2025-06-02"
   },
   {
-    "id": "fav-033",
+    "productId": "prd-033",
     "name": "즐겨찾기 상품 33",
     "registeredAt": "2025-06-18"
   },
   {
-    "id": "fav-034",
+    "productId": "prd-034",
     "name": "즐겨찾기 상품 34",
     "registeredAt": "2025-04-06"
   },
   {
-    "id": "fav-035",
+    "productId": "prd-035",
     "name": "즐겨찾기 상품 35",
     "registeredAt": "2025-05-26"
   },
   {
-    "id": "fav-036",
+    "productId": "prd-036",
     "name": "즐겨찾기 상품 36",
     "registeredAt": "2025-04-13"
   },
   {
-    "id": "fav-037",
+    "productId": "prd-037",
     "name": "즐겨찾기 상품 37",
     "registeredAt": "2025-06-26"
   },
   {
-    "id": "fav-038",
+    "productId": "prd-038",
     "name": "즐겨찾기 상품 38",
     "registeredAt": "2025-06-17"
   },
   {
-    "id": "fav-039",
+    "productId": "prd-039",
     "name": "즐겨찾기 상품 39",
     "registeredAt": "2025-05-06"
   },
   {
-    "id": "fav-040",
+    "productId": "prd-040",
     "name": "즐겨찾기 상품 40",
     "registeredAt": "2025-04-21"
   }
